@@ -382,7 +382,8 @@ a {
 }
 
 .content-header {
-  background: url('../images/banners/banner-01.jpg') no-repeat center center;
+  background: url('../images/banners/banner-01.jpg') no-repeat center
+    center;
   background-size: cover;
 }
 
@@ -676,14 +677,20 @@ a {
   text-transform: uppercase;
   padding-right: 90px;
   height: 60px;
-  background: url('./../images/icons/mail-send.png') no-repeat center right;
+  background: url('./../images/icons/mail-send.png') no-repeat center
+    right;
   background-size: 65px;
+}
+
+.home-newsletter .message {
+  text-align: center;
+  font-size: 12px;
 }
 
 .footer-top {
   min-height: 322px;
-  background: url('../images/banners/banner-06.jpg') no-repeat center right
-    #1b1927;
+  background: url('../images/banners/banner-06.jpg') no-repeat center
+    right #1b1927;
   color: #aeaeae;
   overflow: hidden;
   /* padding: 50px 0 0 50px; */
