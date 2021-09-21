@@ -1,3 +1,8 @@
+const ADD_TO_CART_EVENT = 'cart:add';
+const REMOVE_FROM_CART_EVENT = 'cart:remove';
+const ADD_TO_WISHLIST_EVENT = 'wishlist:add';
+const REMOVE_FROM_WISHLIST_EVENT = 'wishlist:remove';
+
 class NewsLetterForm extends React.Component {
   // v1 - define state in class-based react
   state = {
@@ -126,9 +131,16 @@ class AddToCartButton extends React.Component {
 
     setTimeout(() => {
       dispatchEvent(
-        new CustomEvent('cart:add', {
-          detail: this.props.productId,
-        }),
+        new CustomEvent(
+          this.state.added
+            ? REMOVE_FROM_CART_EVENT
+            : ADD_TO_CART_EVENT,
+          {
+            detail: {
+              productId: this.props.productId,
+            },
+          },
+        ),
       );
 
       this.setState({
@@ -247,3 +259,90 @@ productTileControls.forEach((productTileControl, index) => {
     productTileControl,
   );
 });
+
+class HeaderCounters extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      cartItemsCount: 0,
+      wishlistItemsCount: 0,
+      cartItems: [],
+      wishlistItems: [],
+    };
+  }
+
+  showProducts(collectionName, displayName) {
+    let msg = '';
+    const bucket = displayName.toLowerCase();
+
+    if (this.state[collectionName] < 1) {
+      msg = `There are no products in your ${bucket}`;
+    } else {
+      // array to string interpolation
+      msg = `These are the Pids in your ${bucket}: ${
+        this.state[`${bucket}Items`]
+      }`;
+    }
+
+    alert(msg);
+  }
+
+  productCartAction = (event) => {
+    const { productId } = event.detail;
+    // const {type: eventType} = event; - same
+    const eventType = event.type;
+    let { cartItemsCount, cartItems } = this.state;
+
+    switch (eventType) {
+      case ADD_TO_CART_EVENT:
+        cartItemsCount++;
+        cartItems.push(productId);
+        break;
+      case REMOVE_FROM_CART_EVENT:
+        cartItemsCount--;
+        cartItems = cartItems.filter((item) => {
+          return item !== productId;
+        });
+        break;
+    }
+
+    this.setState({
+      // cartItemsCount: cartItemsCount, - same as below
+      cartItemsCount,
+      cartItems,
+    });
+  };
+
+  componentDidMount() {
+    addEventListener(ADD_TO_CART_EVENT, this.productCartAction);
+    addEventListener(REMOVE_FROM_CART_EVENT, this.productCartAction);
+  }
+
+  render() {
+    let { cartItemsCount, wishlistItemsCount } = this.state;
+    return (
+      <React.Fragment>
+        <div className="header-counter">
+          <span className="qty">{wishlistItemsCount}</span>
+          <i
+            className="fas fa-heart icon"
+            onClick={() => {
+              this.showProducts('wishlistItemsCount', 'Wishlist');
+            }}></i>
+        </div>
+        <div className="header-counter">
+          <span className="qty">{cartItemsCount}</span>
+          <i
+            className="fas fa-shopping-cart icon"
+            onClick={() => {
+              this.showProducts('cartItemsCount', 'Cart');
+            }}></i>
+        </div>
+      </React.Fragment>
+    );
+  }
+}
+
+const headerCounters = document.querySelector('.header-counters');
+ReactDOM.render(<HeaderCounters></HeaderCounters>, headerCounters);
