@@ -192,6 +192,17 @@ class AddToWishlistButton extends React.Component {
     });
 
     setTimeout(() => {
+      const { productId } = this.props;
+      dispatchEvent(
+        new CustomEvent(
+          !this.state.added
+            ? ADD_TO_WISHLIST_EVENT
+            : REMOVE_FROM_WISHLIST_EVENT,
+          {
+            detail: { productId },
+          },
+        ),
+      );
       this.setState({
         busy: false,
         added: !this.state.added,
@@ -269,6 +280,7 @@ class HeaderCounters extends React.Component {
       wishlistItemsCount: 0,
       cartItems: [],
       wishlistItems: [],
+      showWishlistBtn: true,
     };
   }
 
@@ -290,7 +302,7 @@ class HeaderCounters extends React.Component {
 
   productCartAction = (event) => {
     const { productId } = event.detail;
-    // const {type: eventType} = event; - same
+    // const {type: eventType} = event; - same as below =>
     const eventType = event.type;
     let { cartItemsCount, cartItems } = this.state;
 
@@ -314,23 +326,101 @@ class HeaderCounters extends React.Component {
     });
   };
 
+  productWishlistAction = (event) => {
+    alert('on event');
+    const { productId } = event.detail;
+    const { type: eventType } = event;
+    const { wishlistItems } = this.state;
+    let newProductIds = [];
+    let productCount = 0;
+
+    switch (eventType) {
+      case ADD_TO_WISHLIST_EVENT:
+        newProductIds =
+          wishlistItems.length === 0
+            ? [productId]
+            : [...wishlistItems, productId];
+
+        break;
+
+      case REMOVE_FROM_WISHLIST_EVENT:
+        // using FOR, don't use FOR to iterate over arrays - just showing it is still js
+        for (let i = 0; i < wishlistItems.length; i++) {
+          if (wishlistItems[i] === productId) {
+            continue;
+          }
+          newProductIds.push(wishlistItems[i]);
+        }
+        break;
+    }
+    productCount = newProductIds.length;
+
+    this.setState({
+      wishlistItemsCount: productCount,
+      wishlistItems: newProductIds,
+    });
+  };
+
   componentDidMount() {
+    // window event can be added here
     addEventListener(ADD_TO_CART_EVENT, this.productCartAction);
+
     addEventListener(REMOVE_FROM_CART_EVENT, this.productCartAction);
+
+    addEventListener(
+      ADD_TO_WISHLIST_EVENT,
+      this.productWishlistAction,
+    );
+
+    addEventListener(
+      REMOVE_FROM_WISHLIST_EVENT,
+      this.productWishlistAction,
+    );
+  }
+
+  componentWillUnmount() {
+    removeEventListener(removeO_CART_EVENT, this.productCartAction);
+
+    removeEventListener(
+      REMOVE_FROM_CART_EVENT,
+      this.productCartAction,
+    );
+
+    removeEventListener(
+      ADD_TO_WISHLIST_EVENT,
+      this.productWishlistAction,
+    );
+
+    removeEventListener(
+      REMOVE_FROM_WISHLIST_EVENT,
+      this.productWishlistAction,
+    );
   }
 
   render() {
     let { cartItemsCount, wishlistItemsCount } = this.state;
     return (
       <React.Fragment>
-        <div className="header-counter">
-          <span className="qty">{wishlistItemsCount}</span>
-          <i
-            className="fas fa-heart icon"
-            onClick={() => {
-              this.showProducts('wishlistItemsCount', 'Wishlist');
-            }}></i>
-        </div>
+        <button
+          type="button"
+          title="hide wishlist"
+          onClick={() => {
+            this.setState({
+              showWishlistBtn: !this.state.showWishlistBtn,
+            });
+          }}>
+          Remove Wishlist
+        </button>
+        {this.state.showWishlistBtn ? (
+          <div className="header-counter">
+            <span className="qty">{wishlistItemsCount}</span>
+            <i
+              className="fas fa-heart icon"
+              onClick={() => {
+                this.showProducts('wishlistItemsCount', 'Wishlist');
+              }}></i>
+          </div>
+        ) : null}
         <div className="header-counter">
           <span className="qty">{cartItemsCount}</span>
           <i
