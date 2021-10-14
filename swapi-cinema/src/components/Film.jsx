@@ -1,7 +1,8 @@
 import { Component } from 'react';
+import MetaImage from './MetaImage';
 
 class Film extends Component {
-  render() {
+  render(props) {
     const buyButtonTitle = `buy tickets for ${this.props.film.title}`;
     return (
       <article className="row">
@@ -17,8 +18,9 @@ class Film extends Component {
             Back
           </button>
         </div>
+
         <div className="col-12 col-md-4 text-center">
-          insert image here
+          <MetaImage term={this.props.title}></MetaImage>
         </div>
 
         <div className="col-12 col-md-8 mt-4 mt-md-0">
