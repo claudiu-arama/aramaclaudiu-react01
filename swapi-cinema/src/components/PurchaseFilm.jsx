@@ -85,7 +85,14 @@ class PurchaseFilm extends Component {
 
     return (
       <table className="table table-striped table-dark">
-        <tbody>{this.renderTotalLines()}</tbody>
+        <tbody>
+          {this.renderTotalLines()}
+
+          <tr>
+            <td className="fw-bold">Totals:</td>
+            <td>USD{total}</td>
+          </tr>
+        </tbody>
       </table>
     );
   }

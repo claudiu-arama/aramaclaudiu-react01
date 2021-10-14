@@ -15,7 +15,7 @@ export const MetaImage = ({ term }) => {
   // we will use useeffect to call the api
   useEffect(() => {
     const refinedSearchTerm = encodeURIComponent(`star wars ${term}`);
-    const random = Math.floor(Math.random() * 10000) + 2;
+    const random = Math.floor(Math.random() * 2000) + 1;
 
     setTimeout(() => {
       fetch(
