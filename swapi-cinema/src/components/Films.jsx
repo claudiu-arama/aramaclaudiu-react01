@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import MetaImage from './MetaImage';
+// import MetaImage from './MetaImage';
 
 class Films extends Component {
   renderFilms() {
