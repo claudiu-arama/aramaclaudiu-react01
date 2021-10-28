@@ -1,6 +1,7 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { AppContext } from '../contexts/AppContext';
 import MetaImage from '../legacy/MetaImage';
+import Dialog from './Dialog';
 import ProductDetails from './ProductDetails.';
 
 export const Product = () => {
@@ -16,8 +17,12 @@ export const Product = () => {
   const productInCart = useMemo(() => {
     return cart.find((cartItem) => {
       return cartItem.name === product.name;
-    });
+    })
+      ? true
+      : false;
   }, [cart, product.name]);
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const navigateHome = () => {
     dispatch({
@@ -31,9 +36,24 @@ export const Product = () => {
     });
   };
 
+  const navigateToCart = () => {
+    dispatch({
+      type: 'setScreen',
+      payload: 'cart',
+    });
+  };
+
   const addToCart = () => {
     dispatch({
       type: 'addToCart',
+      payload: product,
+    });
+    setIsDialogOpen(true);
+  };
+
+  const removeFromCart = () => {
+    dispatch({
+      type: 'removeFromCart',
       payload: product,
     });
   };
@@ -67,12 +87,52 @@ export const Product = () => {
           className="btn btn-warning btn-xl flex-grow-1"
           title={`Add ${product.name} to cart`}
           type="button"
-          onClick={addToCart}>
+          onClick={() => {
+            productInCart ? removeFromCart() : addToCart();
+          }}>
           {productInCart
             ? 'remove from cart'
             : `add to cart (${product.cost_in_credits})`}
         </button>
       </div>
+      <Dialog
+        show={isDialogOpen}
+        onClose={() => {
+          setIsDialogOpen(false);
+        }}>
+        <div className="alert alert-success">
+          {product.name} ({product.cost_in_credits}) added to cart
+        </div>
+
+        <div className="d-flex justify-content-between mt-6">
+          <button
+            className="btn btn-secondary btn-sm"
+            title="see cart"
+            type="button"
+            onClick={navigateToCart}>
+            see cart
+          </button>
+          <button
+            className="btn btn-secondary btn-sm"
+            title="continue shopping"
+            type="button"
+            onClick={navigateHome}>
+            continue shopping
+          </button>
+        </div>
+
+        <div className="text-end mt-2">
+          <button
+            className="btn btn-danger btn-xl"
+            type="button"
+            title="close"
+            onClick={() => {
+              setIsDialogOpen(false);
+            }}>
+            Close
+          </button>
+        </div>
+      </Dialog>
     </section>
   );
 };

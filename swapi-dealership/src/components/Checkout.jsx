@@ -10,7 +10,24 @@ export const Checkout = () => {
   } = useContext(AppContext);
 
   const placeOrder = (formData) => {
-    console.log('send to', formData);
+    dispatch({
+      type: 'setOrder',
+      payload: {
+        address: formData,
+        // clone cart to not copy pointer but get a copy of the array => new array
+        items: [...cart],
+      },
+    });
+
+    dispatch({
+      type: 'setScreen',
+      payload: 'OrderConfirmation',
+    });
+
+    dispatch({
+      type: 'emptyCart',
+      // payload is not always required - see here
+    });
   };
 
   return (

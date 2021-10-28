@@ -1,13 +1,20 @@
 import { useContext } from 'react';
 import { AppContext } from '../contexts/AppContext';
+import Search from '../legacy/Search';
 import ProductTile from './ProductTile';
 
 export const SearchResults = () => {
   const { state, dispatch } = useContext(AppContext);
   const { searchResults } = state;
+
   const renderResults = () => {
     if (searchResults.length <= 0) {
-      return <p>can't buy your way off-planet!</p>;
+      return (
+        <>
+          <p>can't buy your way off-planet!</p>{' '}
+          <Search className="d-inline-flex my-4 w-25 mx-auto" />
+        </>
+      );
     }
     return searchResults.map((result) => {
       return <ProductTile product={result} key={result.name} />;

@@ -2,7 +2,7 @@ export const ProductDetails = ({ product }) => {
   const renderTableRows = () => {
     const entries = Object.entries(product);
 
-    entries.map(([feature, value]) => {
+    return entries.map(([feature, value]) => {
       return (
         <tr key={feature}>
           <td>{feature}</td>

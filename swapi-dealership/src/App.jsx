@@ -25,7 +25,7 @@ const App = () => {
       <header className="navbar-dark fixed-top bg-dark border-bottom border-warning">
         <nav className="container d-flex justify-content-between">
           <h1 className="display-6 text-warning">Swapi Vehicles</h1>
-          <Search />
+          <Search className="d-inline-flex align-self-center" />
         </nav>
       </header>
       <main className="container mb-4 mt-7">

@@ -3,6 +3,7 @@ import Product from './Product.jsx';
 import SearchResults from './SearchResults';
 import Cart from './Cart';
 import Checkout from './Checkout';
+import OrderConfirmation from './OrderConfirmation';
 
 const componentMap = {
   home: Products,
@@ -10,6 +11,7 @@ const componentMap = {
   searchResults: SearchResults,
   cart: Cart,
   checkout: Checkout,
+  OrderConfirmation: OrderConfirmation,
 };
 // <componentMap.home />
 // set up a default by using {screen = 'home'}
