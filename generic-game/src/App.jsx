@@ -1,47 +1,30 @@
-import { useDispatch, useSelector } from 'react-redux';
-import clickClicker, {
-  decrementClicker,
-} from './actions/creators/ui';
+import { Switch, Route, Router, BrowserRouter } from 'react-router';
 import { initializeGoogleAuth } from './api';
 import { Footer, Header } from './components/common';
+import history from './history';
+import {
+  HomePage,
+  NotFoundPage,
+  ProfilePage,
+  RanksPage,
+} from './pages';
 
 initializeGoogleAuth();
 
 export const App = () => {
-  const clicker = useSelector((state) => {
-    const { ui } = state;
-
-    return ui.clicker;
-  });
-  const dispatch = useDispatch();
   return (
-    <>
+    <Router history={history}>
       <Header />
-      <main>
-        <div>value is: {clicker}</div>
-        <button
-          onClick={() => {
-            dispatch(decrementClicker(10));
-          }}>
-          dec
-        </button>
-        <button
-          onClick={() => {
-            dispatch(
-              clickClicker(),
-              //   {
-              //   type: 'CLICK',
-              //   payload: 5,
-              //   // since this is an object, it is not restricted to type and payload, any other info can be sent,
-              //   // add any key below to experience. destructure same in reducer to get it
-              // }
-            );
-          }}>
-          inc
-        </button>
+      <main className="text-red-500">
+        <Switch>
+          <Route exact path="/" component={HomePage}></Route>
+          <Route path="/profile" component={ProfilePage}></Route>
+          <Route path="/ranks" component={RanksPage}></Route>
+          <Route component={NotFoundPage}></Route>
+        </Switch>
       </main>
       <Footer />
-    </>
+    </Router>
   );
 };
 

@@ -2,6 +2,11 @@ import { login, logout } from '../actions/creators/auth';
 import store from '../store';
 
 let eventBound = false;
+const googleOauthAppId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+
+if (googleOauthAppId.length <= 0) {
+  throw new Error('google client ID not found');
+}
 
 // recipe
 // promise chaining below - google it
