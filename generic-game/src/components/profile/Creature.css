@@ -1,0 +1,95 @@
+@keyframes action-bounce {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  20% {
+    transform: translate(0, 35px);
+  }
+
+  30%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.eye {
+  background-color: #fff;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  /* alternative to above */
+  /* @apply rounded-full; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.eye__iris {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: crimson;
+}
+
+.eye__lid {
+  /* animation: name duration timing-function delay iteration-count direction fill-mode; */
+  width: 35px;
+  height: 35px;
+  position: absolute;
+  top: -35px;
+  left: 0;
+  will-change: transform;
+  transform: translateZ(0);
+  background-color: #ffabce;
+}
+
+.eye--blinking .eye__lid {
+  animation: action-bounce 3s linear infinite;
+}
+
+/* jankfree.org - solutions for animations */
+
+.nose {
+  width: 60px;
+  height: 50px;
+  border-radius: 20px;
+  position: relative;
+  background-color: #ffabce;
+}
+
+.nose__nostril {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #000;
+  top: 20px;
+}
+
+.nose__nostril--left {
+  right: 15px;
+}
+
+.nose__nostril--right {
+  left: 15px;
+}
+
+.creature {
+  width: 220px;
+  height: 160px;
+  border-radius: 30px;
+  border: 3px solid #000;
+  position: relative;
+}
+
+.creature__eyes {
+  position: relative;
+  margin-top: 50px;
+}

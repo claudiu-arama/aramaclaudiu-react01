@@ -1,19 +1,39 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  patchUserProfile,
+  setCreatureColor,
+} from '../../actions/creators/profile';
 import { createProfile } from '../../api/users';
+import { useProfileColors } from './../../hooks';
 import { Button } from './../ui';
 
 export const ProfileForm = () => {
   //destructuring below
-  const { mainColor, secondaryColor, eyeColor } = useSelector(
-    ({ profile }) => {
-      const { creature } = profile;
+  const { mainColor, secondaryColor, eyeColor } = useProfileColors();
 
-      return creature;
-    },
-  );
+  const userId = useSelector(({ auth }) => {
+    return auth.user.id;
+  });
+  const sendColors = useDispatch();
 
   const onSubmit = (event) => {
     event.preventDefault();
+
+    sendColors(
+      patchUserProfile(userId, {
+        mainColor,
+        secondaryColor,
+        eyeColor,
+      }),
+    );
+  };
+
+  const onColorPickerChange = (event) => {
+    const element = event.target;
+    const targetProperty = element.name;
+    const colorValue = element.value;
+
+    sendColors(setCreatureColor(targetProperty, colorValue));
   };
   return (
     <form onSubmit={onSubmit}>
@@ -24,6 +44,7 @@ export const ProfileForm = () => {
           name="mainColor"
           id="mainColor"
           value={mainColor}
+          onChange={onColorPickerChange}
         />
       </div>
 
@@ -34,6 +55,7 @@ export const ProfileForm = () => {
           name="secondaryColor"
           id="secondaryColor"
           value={secondaryColor}
+          onChange={onColorPickerChange}
         />
       </div>
       <div className="mb-4 flex justify-between">
@@ -44,6 +66,7 @@ export const ProfileForm = () => {
           name="eyeColor"
           id="eyeColor"
           value={eyeColor}
+          onChange={onColorPickerChange}
         />
       </div>
 

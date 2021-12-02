@@ -58,4 +58,59 @@ export const readProfile = async (userId) => {
 
 //update profile
 
+export const updateProfile = async (userId, colors) => {
+  const payload = {
+    // id: userId,
+    creature: colors,
+  };
+
+  return await usersApi.patch(`/profiles/${userId}`, payload);
+};
+
+// syntactic sugar of JS promises
+export const updateGameLost = async (userId, userStats) => {
+  const payload = {
+    stats: {
+      ...userStats,
+      gamesLost: userStats.gamesLost + 1,
+      gamesPlayed: userStats.gamesPlayed + 1,
+    },
+  };
+
+  const { data } = await usersApi.patch(`/users/${userId}`, payload);
+  if (data.stats) {
+    return data.stats;
+  }
+
+  return undefined;
+};
+
+export const updateGameWon = async (userId, userStats) => {
+  const payload = {
+    stats: {
+      ...userStats,
+      gamesWon: userStats.gamesWon + 1,
+      gamesLost: userStats.gamesLost - 1,
+      gamesPlayed: userStats.gamesPlayed + 1,
+    },
+  };
+
+  const { data } = await usersApi.patch(`/users/${userId}`, payload);
+
+  if (data.stats) {
+    return data.stats;
+  }
+
+  return undefined;
+};
+
+export const readUsers = async () => {
+  try {
+    const { data } = await usersApi.get('/users');
+    return data;
+  } catch (response) {
+    return response;
+  }
+};
+
 export default usersApi;

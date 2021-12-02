@@ -3,10 +3,17 @@ import {
   createUser,
   readProfile,
   readUser,
+  updateGameLost,
+  updateGameWon,
+  updateProfile,
 } from '../../../api/users';
-import { PROFILE_SET_STATS } from './../../types/profile';
+import {
+  PROFILE_SET_COLOR,
+  PROFILE_SET_COLORS,
+  PROFILE_SET_STATS,
+} from '../../types/profile';
 
-// getUserStats - create Redux action below, using thunk
+// getUserStats
 export const getUserStats = (userId) => {
   return async (dispatch) => {
     try {
@@ -15,7 +22,6 @@ export const getUserStats = (userId) => {
       dispatch(setUserStats(stats));
 
       return stats;
-      // axios call - destruct response
     } catch ({ response }) {
       return Promise.reject(response);
     }
@@ -37,24 +43,87 @@ export const postUserStats = (userId) => {
 };
 
 export const getUserProfile = (userId) => {
-  return async () => {
+  return async (dispatch) => {
     let creatureColors = {};
 
     try {
       creatureColors = await readProfile(userId);
-      // set colors in state
+
+      /**
+       *  action name SET_PROFILE_COLORS
+       * actioncreator setCreatureColors
+       * reducer  */
+
+      dispatch(setCreatureColors(creatureColors));
 
       return creatureColors;
-    } catch (_) {
-      return Promise.reject();
+    } catch (error) {
+      const response = error.response;
+      return Promise.reject(response);
     }
   };
 };
-//action creator
+
 export const postUserProfile = (userId) => {
   return async (_, getState) => {
     const { profile } = getState();
 
     await createProfile(userId, profile.creature);
+  };
+};
+
+export const setCreatureColor = (targetProperty, color) => {
+  return {
+    type: PROFILE_SET_COLOR,
+    payload: {
+      targetProperty,
+      color,
+    },
+  };
+};
+
+export const patchUserProfile = (userId, colors) => {
+  return async () => {
+    await updateProfile(userId, colors);
+  };
+};
+
+export const setCreatureColors = (creatureColors) => {
+  return {
+    type: PROFILE_SET_COLORS,
+    payload: creatureColors,
+  };
+};
+
+export const patchGameLost = () => {
+  return async (dispatch, getState) => {
+    const { auth, profile } = getState();
+    const { id: userId } = auth.user;
+    const { stats } = profile;
+
+    try {
+      const userStats = await updateGameLost(userId, stats);
+
+      dispatch(setUserStats(userStats));
+    } catch (error) {
+      return Promise.reject(error.response);
+      // if any other error, notify user, rollback changes in state
+    }
+  };
+};
+
+export const patchGameWon = () => {
+  return async (dispatch, getState) => {
+    const { auth, profile } = getState();
+    const { id: userId } = auth.user;
+    const { stats } = profile;
+
+    try {
+      const userStats = await updateGameWon(userId, stats);
+
+      dispatch(setUserStats(userStats));
+    } catch (error) {
+      return Promise.reject(error.response);
+    }
   };
 };

@@ -1,5 +1,6 @@
 import { initializeGoogleAuth } from '../../../api/googleAuth';
-import { AUTH_LOGIN, AUTH_LOGOUT } from '../../types/auth';
+import { readUsers } from '../../../api/users';
+import { AUTH_LOGIN, AUTH_LOGOUT, SET_USERS } from '../../types/auth';
 import {
   getUserProfile,
   getUserStats,
@@ -44,9 +45,8 @@ export const login = (user) => {
       //dispatch postUserProfile
       await dispatch(postUserProfile(id));
     }
+    dispatch(setLogin(user));
   };
-
-  dispatch(setLogin(user));
 };
 // without exporting, this is a private option if we so choose
 export const setLogin = (user) => {
@@ -75,5 +75,31 @@ export const requestSignOut = () => {
     return initializeGoogleAuth().then((GoogleAuth) => {
       GoogleAuth.signOut();
     });
+  };
+};
+//should be in a users slice
+export const getUsers = (force = false) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const cached = state.users.cached;
+
+    if (cached === true && force === false) {
+      return;
+    }
+
+    try {
+      const users = await readUsers();
+      dispatch(setUsers(users));
+    } catch (response) {
+      console.log(response);
+    }
+  };
+};
+
+//should be in a users slice
+export const setUsers = (users) => {
+  return {
+    type: SET_USERS,
+    payload: users,
   };
 };

@@ -1,13 +1,31 @@
-import { useAuth } from '../hooks/useAuth';
+import { UserStats } from '../components/profile';
+import { Button } from '../components/ui';
+import { useAuth } from '../hooks';
+import { useStats } from '../hooks';
+import { Link } from 'react-router-dom';
 
 export const HomePage = () => {
   const { authenticated, established } = useAuth();
+  const stats = useStats();
   return (
     <div className="container mx-auto p-4">
+      <h1>welcome to word game</h1>
       {!established ? (
         '...add spinner here'
       ) : authenticated ? (
-        'user logged in'
+        <>
+          <UserStats
+            {...stats}
+            className="mt-8"
+            entryClassName="p-5"></UserStats>
+          <div className="mt-2 text-center">
+            <Link to="/play">
+              <Button title="play now" element="span">
+                play now
+              </Button>
+            </Link>
+          </div>
+        </>
       ) : (
         <div className="text-center">
           <button
